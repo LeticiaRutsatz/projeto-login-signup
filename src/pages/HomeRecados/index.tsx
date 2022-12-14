@@ -5,9 +5,12 @@ import InputHome, { inputRecado } from '../../components/InputHome';
 import SectionH1 from '../../components/SectionH1';
 import BasicTable from '../../components/Table';
 import ButtonHome from '../../components/Button/ButtonHome';
+import Button from '@mui/material/Button';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router';
 import { User, Recado } from '../../config/types';
 import { v4 as uuid} from 'uuid';
+
 
 function HomeRecados(){
 
@@ -22,22 +25,21 @@ function HomeRecados(){
                 navigate('/')
             } 
         },
-
        
-        [navigate, userLogged]
+        [navigate, userLogged, userLogged?.recados]
     )
 
     function mudaInput(value: string, key: inputRecado) {
         switch (key) {
             case 'Description':
                 setValueDesc(value);
-                console.log(value)
             break;
 
             case 'Detail':
                 setValueDetail(value);
-                console.log(value)
             break;
+
+            default:
         }
     }
 
@@ -60,10 +62,15 @@ function HomeRecados(){
         setValueDetail('')
     }
 
+    const Logout = () => {
+        console.log('teste')
+    }
+
     return(
         <MainRec>
             <SectionH1>
                 <h1>Sistema de Recados</h1>
+                <Button variant="contained" color="error" startIcon={<LogoutIcon />} onClick={Logout}>Logout</Button>
             </SectionH1>
             <SectionInput>
                 <InputHome label='Descrição' name='Description' type='text' value={valueDesc} handleChange={mudaInput}/>

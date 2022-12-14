@@ -2,38 +2,16 @@ import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import InputDefault, {Name} from '../InputDefault';
 import { Stack, Button, Box, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import FormHelperText from '@mui/material/FormHelperText';
-import userEvent from '@testing-library/user-event';
-
+import { User } from '../../config/types';
 
 interface FormProps {
     mode: 'login' | 'signup';
 }
 
- interface User {
-    name: string;
-    email: string;
-    password: string;
-    recados: Recado[];
-}
-
-interface Recado {
-    id: string;
-    description: string;
-    detail: string;
-}
-
 function Form({mode} : FormProps){
     const navigate = useNavigate();
-
-    const handleNavigate = () => {
-        if(mode === 'login') {
-            navigate('/signup')
-        } else {
-            navigate('/login')
-        }
-    }
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -43,6 +21,14 @@ function Form({mode} : FormProps){
     const [errorEmail, setErrorEmail] = useState(false);
     const [errorPassword, setErrorPassword] = useState(false);
     const [listaUsuarios, setListaUsuarios] = useState<User[]>(JSON.parse(localStorage.getItem('listaUsers') ?? '[]'));
+
+    const handleNavigate = () => {
+        if(mode === 'login') {
+            navigate('/signup')
+        } else {
+            navigate('/')
+        }
+    }
 
     useEffect(() => {
         if(name.length < 3){
@@ -127,15 +113,18 @@ function Form({mode} : FormProps){
 
            if(confirma) {
                 navigate('/signup')
+           }else{
+                navigate('/')
            }
-        }
+        }else{
 
-            localStorage.setItem('usuarioLogado', userExist?.email as string)
+            localStorage.setItem('usuarioLogado', JSON.stringify(userExist))
             
             alert('Login efetuado com sucesso! Redirecionando...')
             setTimeout(() => {
                 navigate('/home')
-            }, 1500)
+            }, 1100)
+        }    
     }
 
     const clearInput = () => {

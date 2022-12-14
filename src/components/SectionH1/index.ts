@@ -5,6 +5,7 @@ const SectionH1 = styled.section`
     height: 20%;
     display: inline-flex;
     align-items: end;
+    justify-content: space-around;
     padding-left: 4rem;
     background-color: #2c73d9;
 
