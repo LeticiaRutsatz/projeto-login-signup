@@ -1,10 +1,12 @@
 import styled from "styled-components";
 
-const MainConfig = styled.main`
+const MainRec = styled.main`
     width: 100vw;
     height: 100vh;
     display: flex;
+    background-color: #000;
+    flex-direction: column;
     overflow: hidden;
 `
 
-export default MainConfig;
+export default MainRec;
