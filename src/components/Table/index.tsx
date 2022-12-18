@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -19,6 +19,15 @@ export default function BasicTable() {
     function handleEdit(recado : Recado){
         console.log('clicou no recado ', recado)
     }
+
+    useEffect(
+        () => {
+            localStorage.setItem('usuarioLogado', JSON.stringify(userLogged));
+            console.log(userLogged)
+        },
+
+        [userLogged]
+    )
     
     function handleDelete(indice : number){
        userLogged?.recados.splice(indice, 1);
@@ -28,14 +37,14 @@ export default function BasicTable() {
             console.log(userLogged);
         }
     }
-
+    
   return (
-    <Grid container paddingX={8}>
+    <Grid container paddingX={2}>
         <Grid xs={12}>
-            <TableContainer component={Paper} sx={{display:'flex', justifyContent:'center', marginTop: '2rem'}}>
-                <Table sx={{ backgroundColor: '#045ee4ab',}} aria-label="simple table">
+            <TableContainer component={Paper} sx={{display:'flex', justifyContent:'center', marginTop: '2rem', marginBottom: '2rem'}}>
+                <Table aria-label="simple table">
                     <TableHead>
-                        <TableRow>
+                        <TableRow sx={{ backgroundColor: '#045ee4ab'}}>
                             <TableCell>ID</TableCell>
                             <TableCell align="center">Descrição</TableCell>
                             <TableCell align="center">Detalhamento</TableCell>
@@ -46,18 +55,18 @@ export default function BasicTable() {
                         {userLogged?.recados.map((dado, index) => (
                             <TableRow
                                 key={dado.id}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 }, Color:'#fff' }}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 }, Color:'#fff',  backgroundColor: '#045ee441' }}
                             >
                                 <TableCell component="th" scope="row">{index + 1}</TableCell>
                                 <TableCell align="center">{dado.description}</TableCell>
                                 <TableCell align="center">{dado.detail}</TableCell>
                                 <TableCell align="center">
                                     <Grid container sx={{display: 'flex', justifyContent:'center'}}>
-                                        <Grid item xs={5} md={6} >
-                                            <Button variant="contained" endIcon={<EditIcon />} sx={{ width: '5rem', height: '2rem', fontSize:'10px'}} onClick={() => handleEdit(dado)} >Editar</Button>
+                                        <Grid item xs={12} sm={6} >
+                                            <Button variant="contained" endIcon={<EditIcon />} sx={{ width: '5rem', height: '2rem', fontSize:'10px', margin:'5px'}} onClick={() => handleEdit(dado)} >Editar</Button>
                                         </Grid>
-                                        <Grid item xs={5} md={3}>
-                                            <Button variant="contained" endIcon={<DeleteIcon/>} sx={{ width: '5rem', height: '2rem', fontSize:'10px'}} onClick={() => handleDelete(index)} >Apagar</Button>
+                                        <Grid item xs={12} sm={6}>
+                                            <Button variant="contained" endIcon={<DeleteIcon/>} sx={{ width: '5rem', height: '2rem', fontSize:'10px', margin:'5px'}} onClick={() => handleDelete(index)} >Apagar</Button>
                                         </Grid>
                                     </Grid> 
                                 </TableCell>

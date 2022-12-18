@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import styled from 'styled-components';
 import InputDefault, {Name} from '../InputDefault';
 import { Stack, Button, Box, Typography } from '@mui/material';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router/dist';
 import FormHelperText from '@mui/material/FormHelperText';
-import { User } from '../../config/types';
-
+import { User, Recado } from '../../config/types';
+import { useDispatch, useSelector } from "react-redux";
 interface FormProps {
     mode: 'login' | 'signup';
 }
@@ -21,6 +20,7 @@ function Form({mode} : FormProps){
     const [errorEmail, setErrorEmail] = useState(false);
     const [errorPassword, setErrorPassword] = useState(false);
     const [listaUsuarios, setListaUsuarios] = useState<User[]>(JSON.parse(localStorage.getItem('listaUsers') ?? '[]'));
+    const dispatch = useDispatch();
 
     const handleNavigate = () => {
         if(mode === 'login') {
@@ -143,7 +143,7 @@ function Form({mode} : FormProps){
                         <InputDefault type='email' label='E-mail' name='email' value={email} handleChange={mudarInput} color={errorEmail ? 'error' : 'primary'}/>
                         <InputDefault type='password' label='Senha' name='password' value={password} handleChange={mudarInput} color={errorPassword ? 'error' : 'primary'}/>
                         <InputDefault type='password' label='Repita a Senha' name='repassword' value={repassword} handleChange={mudarInput} color={errorPassword ? 'error' : 'primary'}/>
-                        <Button disabled={errorName || errorEmail || errorPassword === true} variant='contained' color='primary' onClick={createAccount}>Criar Conta</Button>
+                        <Button disabled={errorName || errorEmail || errorPassword === true} variant='contained' color='primary' onClick={(e) => dispatch(createAccount({name, email, password, recados : Recado[]}))}>Criar Conta</Button>
                     </>
                 )}
 

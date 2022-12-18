@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 const SectionInput = styled.section`
-    width: 100%;
-    height: 20%;
+    width: 100vw;
+    height: 20vh;
     display:flex;
     align-items: center;
     justify-content: space-around;
