@@ -1,5 +1,7 @@
 import React from 'react';
 import { TextField } from '@mui/material';
+import styled from 'styled-components';
+import { blue } from '@mui/material/colors';
 
 interface InputProps {
     type: string;
@@ -11,9 +13,30 @@ interface InputProps {
 
 export type inputRecado = 'Description' | 'Detail';
 
+const CssTextField = styled(TextField)({
+    '& label.Mui-focused': {
+      color: blue[900],
+    },
+    '& .MuiInput-underline:after': {
+      borderBottomColor: blue[900],
+    },
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: blue[900],
+      },
+      '&:hover fieldset': {
+        borderColor: blue[800],
+      },
+      '&.Mui-focused fieldset': {
+        borderColor:blue[900],
+      },
+    },
+  });
+  
+
 function InputHome({name, type, label, value, handleChange} : InputProps){
     return(
-        <TextField color='info' name={name} label={label} variant="outlined" type={type} value={value} sx={{ width: '30%'}} onChange={(ev) => handleChange(ev.target.value, name)} />
+        <CssTextField name={name} label={label} variant="outlined" type={type} value={value} sx={{ width: '35%'}} onChange={(ev) => handleChange(ev.target.value, name)} />
     )
 }
 

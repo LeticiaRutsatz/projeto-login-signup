@@ -34,46 +34,78 @@ function Form({mode} : FormProps){
         }
     }
 
-    useEffect(() => {
-        if(name.length < 3){
-            setErrorName(true);
-                }else{
-            setErrorName(false);
+    const handleValidateInput = (value: string, key: Name) => {
+        switch(key) {
+            case 'name':
+                if(value.length < 3) {
+                    setErrorName(true);
+                } else {
+                    setErrorName(false);
+                }
+            break;
+
+            case 'email':
+                // eslint-disable-next-line no-useless-escape
+                const regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+                if(!value.match(regexEmail)) {
+                    setErrorEmail(true)
+                }else {
+                    setErrorEmail(false)
+                }
+            break;
+
+            case 'password':
+                if(mode === 'signup') {
+                    if(!value || value.length < 6) {
+                        setErrorPassword(true)
+                        
+                    } else {
+                        setErrorPassword(false)
+                    }
+                }
+
+                if(mode === 'login') {
+                    if(!value){
+                        setErrorPassword(true)
+                    } else {
+                        setErrorPassword(false)
+                    }
+                }
+            break;
+
+            case 'repassword':
+                if(value !== password) {
+                    setErrorPassword(true)
+                } else {
+                    setErrorPassword(false)
+                }
+            break
+
+            default:
         }
-
-        const regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
-        if(!email.match(regexEmail)) {
-            setErrorEmail(true)
-        }else {
-            setErrorEmail(false)
-        }
-
-        if(!password || !repassword || password.length < 5 || password !== repassword){
-            setErrorPassword(true)
-        }else{
-            setErrorPassword(false)
-        }
-
-    }, [name, email, password, repassword])
-
+    }
 
     function mudarInput(value: string, key: Name) {
         switch (key) {
             case 'name':
                 setName(value);
+                handleValidateInput(value, key)
             break;
 
             case 'email':
                 setEmail(value);
+                handleValidateInput(value, key)
             break;
 
             case 'password':
                 setPassword(value);
+                handleValidateInput(value, key)
             break;
 
             case 'repassword':
                 setRepassword(value);
+                handleValidateInput(value, key)
             break;
         }
     }

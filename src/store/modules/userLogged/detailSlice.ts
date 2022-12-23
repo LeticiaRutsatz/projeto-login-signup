@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Recado } from '../typeStore';
 
 
 const initialState : string = ''
@@ -12,12 +13,14 @@ const inputDetail = createSlice({
         state = action.payload
         return state
     },
-    clearValueDet(state) {
-         state = '';
+    editarRecadoDet(state, action : PayloadAction<Recado> ) {
+      return state = action.payload.detail
     },
-    
+    clearInputDet(state){
+      return state = ''
+    }
   },
 });
 
-export const { mudarValueDet, clearValueDet } = inputDetail.actions;
+export const { mudarValueDet, editarRecadoDet, clearInputDet } = inputDetail.actions;
 export const inputDetalhe = inputDetail.reducer;

@@ -22,14 +22,22 @@ const userLog = createSlice({
       state.recados.splice(action.payload, 1);
       return state;
     },
-    editarRecado(state, action : PayloadAction<number> ) {
-      state.recados[action.payload].description = 'n sei'
-      state.recados[action.payload].detail = 'n sei'
+    excluirLogado(state) {
+      return initialState;
+    },
+    atualizarRecado(state, action : PayloadAction<Recado> ) {
+      const indexRec = state.recados.findIndex((e) => e.id === action.payload.id);
 
-      return {...state, recados: [...state.recados]}
-    }
-  },
-});
+      if(indexRec === -1 ) {
+        return state
+      }
 
-export const { cadastrarRecado, excluirRecado, atualizarLogged, editarRecado } = userLog.actions;
+      const recadoAtualizado = [...state.recados]
+      recadoAtualizado[indexRec] = action.payload;
+        
+      return {...state, recados: recadoAtualizado}
+    },
+}});
+
+export const { cadastrarRecado, excluirRecado, atualizarLogged, excluirLogado, atualizarRecado } = userLog.actions;
 export const userLogged = userLog.reducer;

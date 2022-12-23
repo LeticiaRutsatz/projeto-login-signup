@@ -5,7 +5,7 @@ import { rootReducer } from './modules/rootReducer';
 
 const persistConfig = {
   key: 'app',
-  blacklist: ['inputDesc', 'inputDetail'],
+  blacklist: ['inputDesc', 'inputDetail', 'buttonEnviar'],
   storage,
 };
 

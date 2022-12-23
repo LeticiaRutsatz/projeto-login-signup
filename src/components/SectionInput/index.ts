@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
 const SectionInput = styled.section`
-    width: 100vw;
     height: 20vh;
     display:flex;
     align-items: center;

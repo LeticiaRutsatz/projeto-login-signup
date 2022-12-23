@@ -14,10 +14,13 @@ const inputDesc = createSlice({
       return state
     },
     editarRecadoDes(state, action : PayloadAction<Recado> ) {
-        
+        return state = action.payload.description
+    },
+    clearInputDesc(state){
+      return state = ''
     }
   },
 });
 
-export const { mudarValueDesc, editarRecadoDes} = inputDesc.actions;
+export const { mudarValueDesc, editarRecadoDes, clearInputDesc} = inputDesc.actions;
 export const inputDescricao = inputDesc.reducer;
