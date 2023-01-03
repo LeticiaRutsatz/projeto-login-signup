@@ -48,7 +48,7 @@ function HomeRecados(){
         const novoRecado: Recado = {
             id: uuid(),
             description: inputDesc,
-            detail: inputDetail,
+            detail: inputDetail
         }
 
         dispatch(cadastrarRecado(novoRecado));

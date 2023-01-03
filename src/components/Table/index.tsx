@@ -1,12 +1,7 @@
 import React,{useState, useEffect} from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
+import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -17,20 +12,21 @@ import { atualizarRecado, excluirRecado } from '../../store/modules/userLogged/u
 import { clearInputDesc, editarRecadoDes } from '../../store/modules/userLogged/descricaoSlice';
 import { clearInputDet, editarRecadoDet } from '../../store/modules/userLogged/detailSlice';
 import { changeBooleanFalse, changeBooleanTrue } from '../../store/modules/buttonEnviar';
+import { IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { listaUsuarios } from '../../store/modules/users/usersSlice';
 
 export default function BasicTable() {
     const userLogged = useAppSelector((state) => state.userLogged);
     const inputDesc = useAppSelector((state) => state.inputDesc);
     const inputDetail = useAppSelector((state) => state.inputDetail);
-    const [buttonEdit, setbuttonEdit] = useState(true);
     const buttonEnviar = useAppSelector((state) => state.buttonEnviar);
 
 
     const dispatch = useAppDispatch();
 
     function handleEdit(dado : Recado, index : number){
-        
-        setbuttonEdit(false);
+
+
         dispatch(editarRecadoDes(dado));
         dispatch(editarRecadoDet(dado));
 
@@ -46,7 +42,6 @@ export default function BasicTable() {
         }
 
         dispatch(atualizarRecado(novoRecado));
-        setbuttonEdit(true);
         clearInput();
 
         dispatch(changeBooleanTrue())
@@ -61,9 +56,9 @@ export default function BasicTable() {
         dispatch(clearInputDesc())
     }
 
-  return (
-    <Grid container padding={4}>
-        <Grid xs={12}>
+    return (
+        <Grid container padding={4}>
+         <Grid xs={12}>
             <TableContainer component={Paper} sx={{display:'flex', justifyContent:'center', marginTop: '2rem', marginBottom: '2rem'}}>
                 <Table aria-label="simple table">
                     <TableHead>
@@ -86,15 +81,15 @@ export default function BasicTable() {
                                 <TableCell align="center">
                                     <Grid container sx={{display: 'flex', justifyContent:'center', alignItems: 'center'}}>
                                         <Grid item xs={12} sm={2} >
-                                            <Button variant="contained" endIcon={<EditIcon />} sx={{ width: '5rem', height: '2rem', fontSize:'10px', margin:'5px'}}  onClick={() => handleEdit(dado, index)}>Editar</Button>
+                                            <IconButton color="primary" sx={{fontSize:'10px', margin:'5px'}} disabled={buttonEnviar === false} onClick={() => handleEdit(dado, index)}> <EditIcon /> </IconButton>
                                         </Grid>
                                         <Grid item xs={12} sm={2} >
-                                            <Button variant="contained" endIcon={<UpgradeIcon />} sx={{ width: '6rem', height: '2rem', fontSize:'10px', margin:'5px'}} disabled={buttonEdit === true} onClick={() => handleAtt(dado)}>Atualizar</Button>
+                                            <IconButton color="primary" sx={{fontSize:'10px', margin:'5px'}} disabled={buttonEnviar === true} onClick={() => handleAtt(dado)}><UpgradeIcon /></IconButton>
                                         </Grid>
                                         <Grid item xs={12} sm={2}>
-                                            <Button variant="contained" endIcon={<DeleteIcon/>} sx={{ width: '5rem', height: '2rem', fontSize:'10px', margin:'5px'}} onClick={() => handleDelete(index)}>Apagar</Button>
+                                            <IconButton color="primary" sx={{fontSize:'10px', margin:'5px'}} onClick={() => handleDelete(index)}><DeleteIcon/> </IconButton>
                                         </Grid>
-                                    </Grid> 
+                                    </Grid>
                                 </TableCell>
                             </TableRow>
                             ))}
@@ -103,5 +98,5 @@ export default function BasicTable() {
                 </TableContainer>
             </Grid>
         </Grid>
-  );
+    )
 }
