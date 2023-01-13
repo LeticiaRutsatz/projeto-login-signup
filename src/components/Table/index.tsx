@@ -1,8 +1,6 @@
 import React,{useState, useEffect} from 'react';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import UpgradeIcon from '@mui/icons-material/Upgrade';
@@ -20,20 +18,23 @@ export default function BasicTable() {
     const inputDesc = useAppSelector((state) => state.inputDesc);
     const inputDetail = useAppSelector((state) => state.inputDetail);
     const buttonEnviar = useAppSelector((state) => state.buttonEnviar);
+    const listaUsuarios = useAppSelector((state) => state.users)
+    const [teste, setTeste] = useState(true);
 
 
     const dispatch = useAppDispatch();
 
     function handleEdit(dado : Recado, index : number){
-
-
         dispatch(editarRecadoDes(dado));
         dispatch(editarRecadoDet(dado));
+        setTeste(false)
 
         dispatch(changeBooleanFalse())
     }
 
     function handleAtt(dado : Recado){
+        setTeste(true)
+        dispatch(changeBooleanTrue())
 
         const novoRecado: Recado = {
             id: dado.id,
@@ -81,10 +82,7 @@ export default function BasicTable() {
                                 <TableCell align="center">
                                     <Grid container sx={{display: 'flex', justifyContent:'center', alignItems: 'center'}}>
                                         <Grid item xs={12} sm={2} >
-                                            <IconButton color="primary" sx={{fontSize:'10px', margin:'5px'}} disabled={buttonEnviar === false} onClick={() => handleEdit(dado, index)}> <EditIcon /> </IconButton>
-                                        </Grid>
-                                        <Grid item xs={12} sm={2} >
-                                            <IconButton color="primary" sx={{fontSize:'10px', margin:'5px'}} disabled={buttonEnviar === true} onClick={() => handleAtt(dado)}><UpgradeIcon /></IconButton>
+                                            <IconButton color="primary" sx={{fontSize:'10px', margin:'5px'}}  onClick={() => teste ? handleEdit(dado, index) : handleAtt(dado)}> {teste? <EditIcon /> : <UpgradeIcon />} </IconButton>
                                         </Grid>
                                         <Grid item xs={12} sm={2}>
                                             <IconButton color="primary" sx={{fontSize:'10px', margin:'5px'}} onClick={() => handleDelete(index)}><DeleteIcon/> </IconButton>

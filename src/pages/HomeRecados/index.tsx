@@ -1,8 +1,5 @@
 import React,{useState, useEffect} from 'react';
-import MainRec from '../../components/Main/mainRec';
-import SectionInput from '../../components/SectionInput';
 import InputHome, { inputRecado } from '../../components/InputHome';
-import SectionH1 from '../../components/SectionH1';
 import BasicTable from '../../components/Table';
 import Button from '@mui/material/Button';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -16,6 +13,7 @@ import { logout } from '../../store/modules/users/usersSlice';
 import { clearInputDesc, mudarValueDesc } from '../../store/modules/userLogged/descricaoSlice';
 import { clearInputDet, mudarValueDet } from '../../store/modules/userLogged/detailSlice';
 import { blue, grey } from '@mui/material/colors';
+import { Grid } from '@mui/material';
 
 
 
@@ -66,18 +64,59 @@ function HomeRecados(){
     }
 
     return(
-        <MainRec>
-            <SectionH1>
+
+        <Grid container sx={{
+                width: '100vw',
+                height: '100vh',
+                margin: 'none',
+                backgroundColor: '#ffff',
+            }}>
+            <Grid item xs={12} sx={{
+                height: {xs:'10vh', md:'20vh'},
+                alignItems: 'flex-end',
+                paddingLeft: '4%',
+                paddingTop: '4%',
+                backgroundColor: '#2c73d9',
+                color: '#fff',
+            }}>
                 <h1>Sistema de Recados</h1>
-            </SectionH1>
-            <SectionInput>
+            </Grid>
+            <Grid item xs={12} md={5} sx={{
+                height: {xs:'10vh', md:'20vh'},
+                backgroundColor: '#2c73d9',
+                borderRadius: {md:'0px 0px 0px 20px'},
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+            }}>
                 <InputHome label='Descrição' name='Description' type='text' value={inputDesc} handleChange={mudaInputDesc}/>
+            </Grid>
+            <Grid item xs={12} md={5} sx={{
+                height: {xs:'10vh', md:'20vh'},
+                backgroundColor: '#2c73d9',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}>
                 <InputHome label='Detalhamento' name='Detail' type='text' value={inputDetail} handleChange={mudaInputDet}/>
-                <Button  variant="contained" endIcon={<SendIcon />} sx={{ width: '7rem', height: '3rem', color: grey[50], backgroundColor: blue[900]}} disabled={buttonEnviar == false} onClick={sendInputs}>Enviar</Button>
-            </SectionInput>
-            <BasicTable />
-            <Button variant="outlined" color="error" startIcon={<LogoutIcon />} onClick={Logout} sx={{marginLeft: '2rem'}}>Logout</Button>
-        </MainRec>
+            </Grid >
+            <Grid item xs={12} md={2} sx={{
+                height: {xs:'10vh', md:'20vh'},
+                backgroundColor: '#2c73d9',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: {md:'0px 0px 20px 0px'},
+            }}>
+                <Button  variant="contained" endIcon={<SendIcon />} sx={{ width: '50%', height: '3rem', color: grey[50], backgroundColor: blue[900]}} disabled={buttonEnviar == false} onClick={sendInputs}>Enviar</Button>
+            </Grid>
+            <Grid item xs={12}>
+                <BasicTable />
+            </Grid>
+            <Grid item>
+                <Button variant="outlined" color="error" startIcon={<LogoutIcon />} onClick={Logout} sx={{marginLeft: '2rem'}}>Logout</Button>
+            </Grid>
+        </Grid>   
     )
 }
 

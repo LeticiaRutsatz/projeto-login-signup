@@ -36,7 +36,7 @@ const CssTextField = styled(TextField)({
 
 function InputHome({name, type, label, value, handleChange} : InputProps){
     return(
-        <CssTextField name={name} label={label} variant="outlined" type={type} value={value} sx={{ width: '35%'}} onChange={(ev) => handleChange(ev.target.value, name)} />
+        <CssTextField name={name} label={label} variant="outlined" type={type} value={value} sx={{ width: '85%'}} onChange={(ev) => handleChange(ev.target.value, name)} />
     )
 }
 
