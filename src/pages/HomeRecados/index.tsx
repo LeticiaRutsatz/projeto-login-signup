@@ -66,18 +66,17 @@ function HomeRecados(){
     return(
 
         <Grid container sx={{
-                width: '100vw',
-                height: '100vh',
                 margin: 'none',
                 backgroundColor: '#ffff',
             }}>
             <Grid item xs={12} sx={{
-                height: {xs:'10vh', md:'20vh'},
+                height: {xs:'15vh', md:'20vh'},
                 alignItems: 'flex-end',
                 paddingLeft: '4%',
-                paddingTop: '4%',
+                paddingTop: '4rem',
                 backgroundColor: '#2c73d9',
                 color: '#fff',
+                fontSize: '1rem'
             }}>
                 <h1>Sistema de Recados</h1>
             </Grid>
@@ -114,7 +113,7 @@ function HomeRecados(){
                 <BasicTable />
             </Grid>
             <Grid item>
-                <Button variant="outlined" color="error" startIcon={<LogoutIcon />} onClick={Logout} sx={{marginLeft: '2rem'}}>Logout</Button>
+                <Button variant="outlined" color="error" startIcon={<LogoutIcon />} onClick={Logout} sx={{marginLeft: '2rem', marginBottom:'2rem'}}>Logout</Button>
             </Grid>
         </Grid>   
     )

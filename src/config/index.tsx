@@ -7,11 +7,6 @@ const GlobalStyle = createGlobalStyle`
         box-sizing: border-box;
     }
 
-    body{
-        width: 90vw !important;
-        height: 100vh;
-    }
-
     html {
         font-family: 'Roboto', sans-serif;
     }

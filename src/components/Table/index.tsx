@@ -19,7 +19,7 @@ export default function BasicTable() {
     const inputDetail = useAppSelector((state) => state.inputDetail);
     const buttonEnviar = useAppSelector((state) => state.buttonEnviar);
     const listaUsuarios = useAppSelector((state) => state.users)
-    const [teste, setTeste] = useState(true);
+    const [upgrade, setUpgrade] = useState(true);
 
 
     const dispatch = useAppDispatch();
@@ -27,13 +27,13 @@ export default function BasicTable() {
     function handleEdit(dado : Recado, index : number){
         dispatch(editarRecadoDes(dado));
         dispatch(editarRecadoDet(dado));
-        setTeste(false)
+        setUpgrade(false)
 
         dispatch(changeBooleanFalse())
     }
 
     function handleAtt(dado : Recado){
-        setTeste(true)
+        setUpgrade(true)
         dispatch(changeBooleanTrue())
 
         const novoRecado: Recado = {
@@ -82,7 +82,7 @@ export default function BasicTable() {
                                 <TableCell align="center">
                                     <Grid container sx={{display: 'flex', justifyContent:'center', alignItems: 'center'}}>
                                         <Grid item xs={12} sm={2} >
-                                            <IconButton color="primary" sx={{fontSize:'10px', margin:'5px'}}  onClick={() => teste ? handleEdit(dado, index) : handleAtt(dado)}> {teste? <EditIcon /> : <UpgradeIcon />} </IconButton>
+                                            <IconButton color="primary" sx={{fontSize:'10px', margin:'5px'}}  onClick={() => upgrade ? handleEdit(dado, index) : handleAtt(dado)}> {upgrade ? <EditIcon /> : <UpgradeIcon />} </IconButton>
                                         </Grid>
                                         <Grid item xs={12} sm={2}>
                                             <IconButton color="primary" sx={{fontSize:'10px', margin:'5px'}} onClick={() => handleDelete(index)}><DeleteIcon/> </IconButton>
