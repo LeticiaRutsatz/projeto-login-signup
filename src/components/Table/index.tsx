@@ -11,7 +11,6 @@ import { clearInputDesc, editarRecadoDes } from '../../store/modules/userLogged/
 import { clearInputDet, editarRecadoDet } from '../../store/modules/userLogged/detailSlice';
 import { changeBooleanFalse, changeBooleanTrue } from '../../store/modules/buttonEnviar';
 import { IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import { listaUsuarios } from '../../store/modules/users/usersSlice';
 
 export default function BasicTable() {
     const userLogged = useAppSelector((state) => state.userLogged);
@@ -19,32 +18,33 @@ export default function BasicTable() {
     const inputDetail = useAppSelector((state) => state.inputDetail);
     const buttonEnviar = useAppSelector((state) => state.buttonEnviar);
     const listaUsuarios = useAppSelector((state) => state.users)
-    const [upgrade, setUpgrade] = useState(true);
+    const [changeIcon, setChangeIcon] = useState(Math.random());
+    
 
 
     const dispatch = useAppDispatch();
 
-    function handleEdit(dado : Recado, index : number){
+    function handleEdit(dado : Recado){
         dispatch(editarRecadoDes(dado));
         dispatch(editarRecadoDet(dado));
-        setUpgrade(false)
+        setChangeIcon(dado.changeIcon)
 
         dispatch(changeBooleanFalse())
     }
 
-    function handleAtt(dado : Recado){
-        setUpgrade(true)
-        dispatch(changeBooleanTrue())
+    function handleAtt(dado : Recado, index:number){
 
         const novoRecado: Recado = {
             id: dado.id,
             description: inputDesc,
             detail: inputDetail,
+            changeIcon: dado.changeIcon
         }
 
         dispatch(atualizarRecado(novoRecado));
         clearInput();
 
+        setChangeIcon(Math.random())
         dispatch(changeBooleanTrue())
     }
     
@@ -82,7 +82,7 @@ export default function BasicTable() {
                                 <TableCell align="center">
                                     <Grid container sx={{display: 'flex', justifyContent:'center', alignItems: 'center'}}>
                                         <Grid item xs={12} sm={2} >
-                                            <IconButton color="primary" sx={{fontSize:'10px', margin:'5px'}}  onClick={() => upgrade ? handleEdit(dado, index) : handleAtt(dado)}> {upgrade ? <EditIcon /> : <UpgradeIcon />} </IconButton>
+                                            <IconButton color="primary" sx={{fontSize:'10px', margin:'5px'}}  onClick={() => dado.changeIcon == changeIcon ? handleAtt(dado, index) : handleEdit(dado)}> {dado.changeIcon == changeIcon ? <UpgradeIcon /> : <EditIcon />} </IconButton>
                                         </Grid>
                                         <Grid item xs={12} sm={2}>
                                             <IconButton color="primary" sx={{fontSize:'10px', margin:'5px'}} onClick={() => handleDelete(index)}><DeleteIcon/> </IconButton>
