@@ -1,196 +1,383 @@
-import React, {useEffect, useState} from 'react';
-import InputDefault, {Name} from '../InputDefault';
-import { Stack, Button, Box, Typography } from '@mui/material';
-import {useNavigate} from 'react-router/dist'
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { adicionar } from '../../store/modules/users/usersSlice';
-import { User } from '../../store/modules/typeStore';
-import { atualizarLogged } from '../../store/modules/userLogged/userSlice';
+import React, { useEffect, useState } from "react";
+import { Stack, Button, Box, Typography, FormHelperText } from "@mui/material";
+import { useNavigate } from "react-router/dist";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { saveUser } from "../../store/modules/users/usersSlice";
+import {
+  atualizarLogged,
+  userLogged,
+} from "../../store/modules/userLogged/userSlice";
+import "../../config/style/index.css";
+import InputDefault, { Name } from "../Inputs/InputDefault";
+import SaveIcon from "@mui/icons-material/Save";
+import { buscarUsuarios } from "../../store/modules/users/usersSlice";
+import { LoadingButton } from "@mui/lab";
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
 
 interface FormProps {
-    mode: 'login' | 'signup';
+  mode: "login" | "signup";
 }
 
-function Form({mode} : FormProps){
+function Form({ mode }: FormProps) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [repassword, setRepassword] = useState("");
+  const [openSuccess, setopenSuccess] = useState(false);
+  const [openError, setopenError] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [errorName, setErrorName] = useState(true);
+  const [errorEmail, setErrorEmail] = useState(true);
+  const [errorPassword, setErrorPassword] = useState(true);
+  const [errorRePassword, setErrorRePassword] = useState(true);
+  const listaSlice = useAppSelector(buscarUsuarios);
+  const { loading, mensagem, success } = useAppSelector((state) => state.users);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [repassword, setRepassword] = useState('');
-    const [errorName, setErrorName] = useState(false);
-    const [errorEmail, setErrorEmail] = useState(false);
-    const [errorPassword, setErrorPassword] = useState(false);
-    const listaUsuarios = useAppSelector((state) => state.users);
+  const handleNavigate = () => {
+    if (mode === "login") {
+      navigate("/signup");
+    } else {
+      navigate("/");
+    }
+  };
 
-    const dispatch = useAppDispatch();
+  const handleCloseSuccess = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
 
-    const navigate = useNavigate();
+    setopenSuccess(false);
 
-    const handleNavigate = () => {
-        if(mode === 'login') {
-            navigate('/signup')
+    setTimeout(() => {
+      navigate("/");
+    }, 1000);
+  };
+
+  const handleCloseError = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setopenError(false);
+  };
+
+  const handleValidateInput = (value: string, key: Name) => {
+    switch (key) {
+      case "name":
+        if (value.length < 3 || value === "") {
+          setErrorName(true);
         } else {
-            navigate('/')
+          setErrorName(false);
         }
-    }
+        break;
 
-    const handleValidateInput = (value: string, key: Name) => {
-        switch(key) {
-            case 'name':
-                if(value.length < 3) {
-                    setErrorName(true);
-                } else {
-                    setErrorName(false);
-                }
-            break;
+      case "email":
+        const regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
-            case 'email':
-                // eslint-disable-next-line no-useless-escape
-                const regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
-                if(!value.match(regexEmail)) {
-                    setErrorEmail(true)
-                }else {
-                    setErrorEmail(false)
-                }
-            break;
-
-            case 'password':
-                if(mode === 'signup') {
-                    if(!value || value.length < 6) {
-                        setErrorPassword(true)
-                        
-                    } else {
-                        setErrorPassword(false)
-                    }
-                }
-
-                if(mode === 'login') {
-                    if(!value){
-                        setErrorPassword(true)
-                    } else {
-                        setErrorPassword(false)
-                    }
-                }
-            break;
-
-            case 'repassword':
-                if(value !== password) {
-                    setErrorPassword(true)
-                } else {
-                    setErrorPassword(false)
-                }
-            break
-
-            default:
+        if (!value.match(regexEmail) || value === "") {
+          setErrorEmail(true);
+        } else {
+          setErrorEmail(false);
         }
-    }
+        break;
 
-    function mudarInput(value: string, key: Name) {
-        switch (key) {
-            case 'name':
-                setName(value);
-                handleValidateInput(value, key)
-            break;
+      case "password":
+        const regexPassword =
+          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm;
 
-            case 'email':
-                setEmail(value);
-                handleValidateInput(value, key)
-            break;
-
-            case 'password':
-                setPassword(value);
-                handleValidateInput(value, key)
-            break;
-
-            case 'repassword':
-                setRepassword(value);
-                handleValidateInput(value, key)
-            break;
+        if (mode === "signup") {
+          if (!value.match(regexPassword) || value === "") {
+            setErrorPassword(true);
+          } else {
+            setErrorPassword(false);
+          }
         }
-    }
 
-    function createAccount(){
-        const newUser = {
-            name,
-            email,
-            password,
-            recados: []
+        if (mode === "login") {
+          if (!value) {
+            setErrorPassword(true);
+          } else {
+            setErrorPassword(false);
+          }
         }
-        
-       const userExist = listaUsuarios.some((user : User) => user.email === newUser.email);
+        break;
 
-       if(!userExist){
-        dispatch(adicionar(newUser));
-        clearInput();
+      case "repassword":
+        if (value === "" || value !== password) {
+          setErrorRePassword(true);
+        } else {
+          setErrorRePassword(false);
+        }
+        break;
 
-        alert('Usuário Cadastrado')
+      default:
+    }
+  };
 
-        setTimeout(() => {
-            navigate('/')
-        },600)
+  function mudarInput(value: string, key: Name) {
+    switch (key) {
+      case "name":
+        setName(value);
+        handleValidateInput(value, key);
+        break;
 
-       }else{
-        alert('E-mail já em uso!')
-       }
+      case "email":
+        setEmail(value);
+        handleValidateInput(value, key);
+        break;
+
+      case "password":
+        setPassword(value);
+        handleValidateInput(value, key);
+        break;
+
+      case "repassword":
+        setRepassword(value);
+        handleValidateInput(value, key);
+        break;
+    }
+  }
+
+  function createAccount() {
+    const newName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+
+    const newUser = {
+      name: newName,
+      email,
+      password,
+    };
+
+    dispatch(saveUser(newUser));
+
+    const userExist = listaSlice.some((user) => user.email === newUser.email);
+
+    if (!userExist) {
+      setopenSuccess(true);
+      console.log(listaSlice);
+      return;
     }
 
-    const login = () => {
-        const userExist = listaUsuarios.find((user) => user.email === email && user.password === password);
+    setopenError(true);
+    clearInput();
+  }
 
-        if(!userExist) {
-           const confirma = window.confirm("Usuário não cadastrado. Deseja cadastrar uma conta? ")
+  function login() {
+    console.log(listaSlice);
 
-           if(confirma) {
-                navigate('/signup')
-           }else{
-                navigate('/')
-           }
-        }else{
-            dispatch(atualizarLogged(userExist));
-            alert('Login efetuado com sucesso! Redirecionando...')
-            setTimeout(() => {
-                navigate('/home')
-            }, 600)
-        }    
+    const userExist = listaSlice.find((user) => {
+      return user.email === email && user.password === password;
+    });
+
+    if (!userExist) {
+      setShowAlert(true);
+      return;
     }
 
-    const clearInput = () => {
-        setName('');
-        setEmail('');
-        setPassword('');
-        setRepassword('');
-    }
+    const userLog = {
+      id: userExist!.id,
+      name: userExist!.name,
+    };
 
-    return(
-        <>
-            <Stack direction="column" spacing={2} sx={{width: '80%'}}>
-                { mode === 'signup' && (
-                    <>
-                        <InputDefault type='name' label='Nome' name='name' value={name} handleChange={mudarInput} color={errorName ? 'error' : 'primary'}/>
-                        <InputDefault type='email' label='E-mail' name='email' value={email} handleChange={mudarInput} color={errorEmail ? 'error' : 'primary'}/>
-                        <InputDefault type='password' label='Senha' name='password' value={password} handleChange={mudarInput} color={errorPassword ? 'error' : 'primary'}/>
-                        <InputDefault type='password' label='Repita a Senha' name='repassword' value={repassword} handleChange={mudarInput} color={errorPassword ? 'error' : 'primary'}/>
-                        <Button disabled={errorName || errorEmail || errorPassword === true} variant='contained' color='primary' onClick={createAccount}>Criar Conta</Button>
-                    </>
-                )}
+    dispatch(atualizarLogged(userLog));
+    localStorage.setItem("userLogged", JSON.stringify(userLog));
 
-                { mode === 'login' && (
-                    <>
-                        <InputDefault type='email' label='E-mail' name='email' value={email} handleChange={mudarInput} color={errorEmail ? 'error' : 'primary'}/>
-                        <InputDefault type='password' label='Senha' name='password' value={password} handleChange={mudarInput} color={'primary'}/>
-                        <Button disabled={errorEmail} variant='contained' color='primary' onClick={login}>Acessar</Button>
-                    </>
-                )}
-                
-            </Stack>
-            <Box marginTop={3}>
-                { mode === 'login' && ( <Typography color='primary' variant='subtitle2'>Não tem conta? <Typography variant='button' color='primary' sx={{cursor: 'pointer'}} onClick={handleNavigate}>Cadastre-se</Typography></Typography> )}
-                { mode === 'signup' && ( <Typography color='primary' variant='subtitle2'>Já tem conta? <Typography variant='button' color='primary' sx={{cursor: 'pointer'}} onClick={handleNavigate}>Fazer Login</Typography></Typography> )}
-            </Box>
-        </>
+    setTimeout(() => {
+      navigate("/home");
+    }, 1000);
+  }
 
-    )
+  const clearInput = () => {
+    setEmail("");
+  };
+
+  return (
+    <>
+      <Stack direction="column" spacing={2} sx={{ width: "80%" }}>
+        {mode === "signup" && (
+          <>
+            <InputDefault
+              type="name"
+              label="Nome"
+              name="name"
+              value={name}
+              handleChange={mudarInput}
+            />
+            <InputDefault
+              type="email"
+              label="E-mail"
+              name="email"
+              value={email}
+              handleChange={mudarInput}
+            />
+            <InputDefault
+              type="password"
+              label="Senha"
+              name="password"
+              value={password}
+              handleChange={mudarInput}
+            />
+            <FormHelperText
+              sx={{
+                color: "#93f2cc",
+                marginTop: "2rem",
+                padding: "0px",
+                fontSize: "10px",
+                display: errorPassword ? "flex" : "none",
+              }}
+            >
+              Sua senha deve conter: Letra maiuscula, número, caracteres
+              especiais e 8 digitos.
+            </FormHelperText>
+            <InputDefault
+              type="password"
+              label="Repita a Senha"
+              name="repassword"
+              value={repassword}
+              handleChange={mudarInput}
+            />
+            {loading === true && (
+              <LoadingButton
+                loading
+                loadingPosition="start"
+                startIcon={<SaveIcon />}
+                variant="contained"
+              >
+                Criando
+              </LoadingButton>
+            )}
+
+            <Button
+              disabled={
+                errorName || errorEmail || errorRePassword || errorPassword
+              }
+              variant="contained"
+              onClick={createAccount}
+              sx={{
+                display: loading === true ? "none" : "flex",
+                backgroundColor: "#30c88c",
+              }}
+              className="Button"
+            >
+              Criar Conta
+            </Button>
+          </>
+        )}
+
+        {mode === "login" && (
+          <>
+            <InputDefault
+              type="email"
+              label="E-mail"
+              name="email"
+              value={email}
+              handleChange={mudarInput}
+            />
+            <InputDefault
+              type="password"
+              label="Senha"
+              name="password"
+              value={password}
+              handleChange={mudarInput}
+            />
+
+            {loading === true && (
+              <LoadingButton
+                loading
+                loadingPosition="start"
+                startIcon={<SaveIcon />}
+                variant="contained"
+              >
+                Logando
+              </LoadingButton>
+            )}
+
+            <Button
+              disabled={errorEmail || errorPassword}
+              variant="contained"
+              onClick={login}
+              sx={{
+                backgroundColor: "#30c88c",
+                display: loading === true ? "none" : "flex",
+              }}
+              className="Button"
+            >
+              Acessar
+            </Button>
+          </>
+        )}
+      </Stack>
+      <Box marginTop={3}>
+        {mode === "login" && (
+          <Typography variant="subtitle2" sx={{ color: "#30c88c" }}>
+            Não tem conta?{" "}
+            <Typography
+              variant="button"
+              sx={{ cursor: "pointer", color: "#30c88c" }}
+              onClick={handleNavigate}
+            >
+              Cadastre-se
+            </Typography>
+          </Typography>
+        )}
+        {mode === "signup" && (
+          <Typography variant="subtitle2" sx={{ color: "#30c88c" }}>
+            Já tem conta?{" "}
+            <Typography
+              variant="button"
+              sx={{ cursor: "pointer", color: "#30c88c" }}
+              onClick={handleNavigate}
+            >
+              Fazer Login
+            </Typography>
+          </Typography>
+        )}
+      </Box>
+      <Snackbar
+        open={openSuccess}
+        autoHideDuration={6000}
+        onClose={handleCloseSuccess}
+        anchorOrigin={{ horizontal: "left", vertical: "top" }}
+      >
+        <Alert
+          onClose={handleCloseSuccess}
+          severity="success"
+          sx={{ width: "100%", display: mensagem === "" ? "none" : "flex" }}
+        >
+          {mensagem}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={openError}
+        autoHideDuration={6000}
+        onClose={handleCloseError}
+        anchorOrigin={{ horizontal: "left", vertical: "top" }}
+      >
+        <Alert
+          onClose={handleCloseError}
+          severity="error"
+          sx={{ width: "100%", display: mensagem === "" ? "none" : "flex" }}
+        >
+          {mensagem}
+        </Alert>
+      </Snackbar>
+      <Alert
+        severity="error"
+        sx={{ display: showAlert ? "flex" : "none", marginTop: "1rem" }}
+      >
+        Usuário não encontrado
+      </Alert>
+      ;
+    </>
+  );
 }
 
 export default Form;

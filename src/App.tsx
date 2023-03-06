@@ -1,13 +1,12 @@
-import React from 'react';
-import { ThemeProvider } from 'styled-components';
-import { AppRoutes } from './AppRoutes';
-import GlobalStyle from './config';
+import React from "react";
+import { AppRoutes } from "./AppRoutes";
+import GlobalStyle from "./config";
 
 function App() {
   return (
-   <React.Fragment>
-          <GlobalStyle/>
-          <AppRoutes />
+    <React.Fragment>
+      <GlobalStyle />
+      <AppRoutes />
     </React.Fragment>
   );
 }

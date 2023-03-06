@@ -1,26 +1,25 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Recado } from '../typeStore';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Errand } from "../typeStore";
 
-
-const initialState : string = ''
+const initialState: string = "";
 
 const inputDesc = createSlice({
-  name: 'descricaoSlice',
+  name: "descricaoSlice",
   initialState,
   reducers: {
-
-    mudarValueDesc(state, action : PayloadAction<string> ) {
-      state = action.payload
-      return state
+    mudarValueDesc(state, action: PayloadAction<string>) {
+      state = action.payload;
+      return state;
     },
-    editarRecadoDes(state, action : PayloadAction<Recado> ) {
-        return state = action.payload.description
+    editarRecadoDes(state, action: PayloadAction<Errand>) {
+      return (state = action.payload.name);
     },
-    clearInputDesc(state){
-      return state = ''
-    }
+    clearInputDesc(state) {
+      return (state = "");
+    },
   },
 });
 
-export const { mudarValueDesc, editarRecadoDes, clearInputDesc} = inputDesc.actions;
+export const { mudarValueDesc, editarRecadoDes, clearInputDesc } =
+  inputDesc.actions;
 export const inputDescricao = inputDesc.reducer;

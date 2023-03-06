@@ -1,17 +1,19 @@
-import { combineReducers } from 'redux';
-import buttonEnviar from './buttonEnviar';
-import { inputDescricao } from './userLogged/descricaoSlice';
-import { inputDetalhe } from './userLogged/detailSlice';
-import { userLogged } from './userLogged/userSlice';
-import { listaUsuarios } from './users/usersSlice';
+import { combineReducers } from "redux";
+import buttonEnviar from "./button/buttonEnviar";
+import { errands } from "./errands/errandsSlice";
+import { inputDescricao } from "./userLogged/descricaoSlice";
+import { inputDetalhe } from "./userLogged/detailSlice";
+import { userLogged } from "./userLogged/userSlice";
+import { listUsers } from "./users/usersSlice";
 
 const rootReducer = combineReducers({
-  users: listaUsuarios,
+  users: listUsers,
   userLogged: userLogged,
   inputDesc: inputDescricao,
   inputDetail: inputDetalhe,
-  buttonEnviar : buttonEnviar,
+  buttonEnviar: buttonEnviar,
+  errands: errands,
 });
 
-export type RootState = ReturnType<typeof rootReducer>
+export type RootState = ReturnType<typeof rootReducer>;
 export { rootReducer };

@@ -1,29 +1,85 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { User, Users } from '../typeStore';
+import {
+  createAsyncThunk,
+  createEntityAdapter,
+  createSlice,
+} from "@reduxjs/toolkit";
+import { apiGet, apiPost } from "../../../service/ApiService";
+import { RootState } from "../rootReducer";
+import { saveUserRequest, User } from "../typeStore";
 
-const initialState : Users = [];
+const usersAdapter = createEntityAdapter<User>({
+  selectId: (user) => user.email,
+});
 
-const listaSlice = createSlice({
-  name: 'listaUsuarios',
-  initialState,
-  reducers: {
-    adicionar(state, action : PayloadAction<User>) {
-      return [...state, action.payload]
-    },
-    logout(state, action : PayloadAction<User>) {
-        const indexUser = state.findIndex((user) => user.email === action.payload.email)
+export const getUsers = createAsyncThunk(
+  "listaUsuarios/getlistaUsuarios",
+  async () => {
+    const response = await apiGet("/users");
+    return response;
+  }
+);
 
-        if(indexUser === -1 ) {
-          return state
-        }
+export const saveUser = createAsyncThunk(
+  "users/saveUser",
+  async (dadosNovoUsuario: saveUserRequest) => {
+    const response = await apiPost("/users", dadosNovoUsuario);
+    return response;
+  }
+);
 
-        const listaAtualizada = [...state]
-        listaAtualizada[indexUser] = action.payload;
-        
-        return listaAtualizada;
-    },
+export const { selectAll: buscarUsuarios, selectById: buscarUsuariosID } =
+  usersAdapter.getSelectors<RootState>((state) => state.users);
+
+const listSlice = createSlice({
+  name: "listUsers",
+  initialState: usersAdapter.getInitialState({
+    success: false,
+    mensagem: "",
+    loading: false,
+  }),
+  reducers: {},
+  extraReducers: (builder) => {
+    //GET
+    builder.addCase(getUsers.pending, (state, action) => {
+      state.loading = true;
+      state.success = false;
+    });
+    builder.addCase(getUsers.fulfilled, (state, action) => {
+      if (action.payload.success) {
+        usersAdapter.setAll(state, action.payload.data);
+      }
+      state.mensagem = action.payload.data.mensagem;
+      state.success = true;
+      state.loading = false;
+    });
+    builder.addCase(getUsers.rejected, (state, action) => {
+      state.success = true;
+      state.loading = false;
+      state.mensagem = action.error.message ?? "";
+    });
+
+    //POST
+    builder.addCase(saveUser.pending, (state, action) => {
+      state.loading = true;
+      state.success = false;
+      state.mensagem = "";
+    });
+    builder.addCase(saveUser.fulfilled, (state, action) => {
+      if (action.payload.success) {
+        usersAdapter.addOne(state, action.payload.data);
+      }
+
+      state.success = action.payload.success;
+      state.loading = false;
+      state.mensagem = action.payload.message;
+    });
+    builder.addCase(saveUser.rejected, (state) => {
+      state.success = false;
+      state.loading = false;
+      state.mensagem = "Requisição falhou";
+    });
   },
 });
 
-export const { adicionar, logout } = listaSlice.actions;
-export const listaUsuarios = listaSlice.reducer;
+export const {} = listSlice.actions;
+export const listUsers = listSlice.reducer;
