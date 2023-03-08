@@ -27,26 +27,31 @@ export const { selectAll: buscarRecados, selectById: buscarRecadosById } =
 
 //GET
 export const getRecados = createAsyncThunk(
-  "recados/getRecado",
-  async (id: string) => {
-    const response = await apiGet(`/users/${id}/recados`);
+  "recados/getRecados",
+  async (dados: getErrandRequest) => {
+    const { id, idRecado, name } = dados;
+    const response = await apiGet(`/users/${id}/recados`, {
+      name,
+      idRecado,
+    });
     console.log(response);
     return response;
   }
 );
 
 //GET by ID
-export const getRecadosById = createAsyncThunk(
-  "recados/getRecadoId",
-  async (dados: getErrandRequest) => {
-    const { id, idRecado, name } = dados;
-    const response = await apiGet(
-      `/users/${id}/recados/filtro?name=${name}&idRecado=${idRecado}`
-    );
-    console.log(response);
-    return response;
-  }
-);
+// export const getRecadosById = createAsyncThunk(
+//   "recados/getRecadoId",
+//   async (dados: getErrandRequest) => {
+//     const { id, idRecado, name } = dados;
+//     const response = await apiGet(`/users/${id}/recados/filtro`, {
+//       name,
+//       idRecado,
+//     });
+//     console.log(response);
+//     return response;
+//   }
+// );
 
 //POST
 export const saveRecado = createAsyncThunk(
@@ -59,7 +64,7 @@ export const saveRecado = createAsyncThunk(
   }
 );
 
-//POST
+//put
 export const updateRecado = createAsyncThunk(
   "recados/updateRecado",
   async (dados: updateRecadoRequest) => {
@@ -116,23 +121,25 @@ const errandsSlice = createSlice({
       state.loading = false;
       state.message = action.error.message ?? "";
     });
-    //  GET by ID
-    builder.addCase(getRecadosById.pending, (state, action) => {
-      state.loading = true;
-    });
-    builder.addCase(getRecadosById.fulfilled, (state, action) => {
-      if (action.payload.success) {
-        errandsAdapter.setAll(state, action.payload.data);
-      }
-      state.success = action.payload.success;
-      state.loading = false;
-      state.message = action.payload.message;
-    });
-    builder.addCase(getRecadosById.rejected, (state, action) => {
-      state.success = false;
-      state.loading = false;
-      state.message = action.error.message ?? "";
-    });
+
+    // //  GET by ID
+    // builder.addCase(getRecadosById.pending, (state, action) => {
+    //   state.loading = true;
+    // });
+    // builder.addCase(getRecadosById.fulfilled, (state, action) => {
+    //   if (action.payload.success) {
+    //     errandsAdapter.setAll(state, action.payload.data);
+    //   }
+    //   state.success = action.payload.success;
+    //   state.loading = false;
+    //   state.message = action.payload.message;
+    // });
+    // builder.addCase(getRecadosById.rejected, (state, action) => {
+    //   state.success = false;
+    //   state.loading = false;
+    //   state.message = action.error.message ?? "";
+    // });
+
     //POST
     builder.addCase(saveRecado.pending, (state, action) => {
       state.loading = true;

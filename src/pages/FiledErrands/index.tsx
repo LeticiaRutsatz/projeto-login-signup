@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BasicTableArquivados from "../../components/CardFiled";
+import BasicTableArquivados from "../../components/TableFiled";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Grid, IconButton, MenuItem } from "@mui/material";
 import Menu from "@mui/material/Menu";
@@ -11,6 +11,7 @@ import {
   getRecados,
 } from "../../store/modules/errands/errandsSlice";
 import { atualizarLogged } from "../../store/modules/userLogged/userSlice";
+import { getErrandRequest } from "../../store/modules/typeStore";
 
 function RecadosArquivados() {
   const navigate = useNavigate();
@@ -36,7 +37,12 @@ function RecadosArquivados() {
 
   useEffect(() => {
     if (userLogged.id) {
-      dispatch(getRecados(userLogged.id));
+      const getErrandsUser: getErrandRequest = {
+        id: userLogged!.id,
+        idRecado: "",
+        name: "",
+      };
+      dispatch(getRecados(getErrandsUser));
     }
   }, [userLogged, dispatch]);
 

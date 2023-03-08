@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { CardsErrands } from "../../components/CardErrands";
+import { TableErrands } from "../../components/TableErrands";
 import Button from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router/dist";
-import { Errand, saveRecadoRequest } from "../../store/modules/typeStore";
+import {
+  Errand,
+  getErrandRequest,
+  saveRecadoRequest,
+} from "../../store/modules/typeStore";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { atualizarLogged } from "../../store/modules/userLogged/userSlice";
 import {
@@ -52,7 +56,12 @@ function HomeRecados() {
 
   useEffect(() => {
     if (userLogged.id) {
-      dispatch(getRecados(userLogged.id));
+      const getErrandsUser: getErrandRequest = {
+        id: userLogged!.id,
+        idRecado: "",
+        name: "",
+      };
+      dispatch(getRecados(getErrandsUser));
     }
   }, [userLogged, dispatch]);
 
@@ -62,6 +71,10 @@ function HomeRecados() {
     );
     setreacadosFiltradosNaoArquivados(recadosNaoArquivados);
   }, [recados, recadosSlicebuscar]);
+
+  useEffect(() => {
+    console.log(recados);
+  }, [recados]);
 
   function mudaInputDesc(event: string) {
     dispatch(mudarValueDesc(event));
@@ -245,7 +258,7 @@ function HomeRecados() {
       </Grid>
 
       <Grid item xs={12}>
-        <CardsErrands list={recadosFiltradosNaoArquivados} />
+        <TableErrands list={recadosFiltradosNaoArquivados} />
       </Grid>
     </Grid>
   );

@@ -3,9 +3,9 @@ import { ResponseAPI } from "../store/modules/typeStore";
 
 axios.defaults.baseURL = "https://api-recados.onrender.com";
 
-const apiGet = async (rota: string) => {
+const apiGet = async (rota: string, params?: any) => {
   try {
-    const resposta: AxiosResponse = await axios.get(rota);
+    const resposta: AxiosResponse = await axios.get(rota, { params });
 
     const retornoAPI: ResponseAPI = {
       success: resposta.data.success,
@@ -16,9 +16,9 @@ const apiGet = async (rota: string) => {
     return retornoAPI;
   } catch (error: any) {
     const retornoAPIError: ResponseAPI = {
-      success: error.respsonse.data.success,
-      message: error.respsonse.data.message,
-      data: error.respsonse.data.data,
+      success: error.response.data.success,
+      message: error.response.data.message,
+      data: error.response.data,
     };
 
     return retornoAPIError;

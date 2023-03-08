@@ -45,7 +45,6 @@ import {
   buscarRecados,
   deleteRecado,
   getRecados,
-  getRecadosById,
   updateRecado,
 } from "../../store/modules/errands/errandsSlice";
 
@@ -53,23 +52,32 @@ interface FormProps {
   list: Errand[];
 }
 
-function CardsErrands({ list }: FormProps) {
+function TableErrands({ list }: FormProps) {
   const userLogged = useAppSelector((state) => state.userLogged);
   const recadosSlicebuscar = useAppSelector(buscarRecados);
   const [inputId, setInputId] = useState<any>("");
   const [inputName, setInputName] = useState("");
   const inputDesc = useAppSelector((state) => state.inputDesc);
   const inputDetail = useAppSelector((state) => state.inputDetail);
-  let { loading, message, success } = useAppSelector((state) => state.errands);
   const [changeIcon, setChangeIcon] = useState(Math.random());
   const [checked, setChecked] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
+  const [openAlertError, setOpenAlertError] = useState(false);
+  const { loading, message, success } = useAppSelector(
+    (state) => state.errands
+  );
+  const [messageError, setMessageError] = useState("");
 
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (checked && userLogged.id) {
-      dispatch(getRecados(userLogged.id));
+      const getErrandsUser: getErrandRequest = {
+        id: userLogged!.id,
+        idRecado: "",
+        name: "",
+      };
+      dispatch(getRecados(getErrandsUser));
     }
   }, [checked, dispatch, userLogged]);
 
@@ -134,27 +142,30 @@ function CardsErrands({ list }: FormProps) {
   }
 
   function handleToFilter() {
-    let iderrand = list[inputId - 1].id as string;
+    let existIdErrand = list[inputId - 1];
 
-    if (iderrand === undefined) {
-      success = false;
-      message = "ID não encontrado, digite novamente";
+    if (existIdErrand === undefined) {
+      setMessageError("ID não encontrado, digite novamente");
+      setOpenAlertError(true);
+      return;
     }
+
+    const idErrandTrue = existIdErrand.id;
 
     const errandToFilter: getErrandRequest = {
       id: userLogged!.id,
-      idRecado: iderrand,
+      idRecado: idErrandTrue,
       name: inputName,
     };
-    dispatch(getRecadosById(errandToFilter));
+    dispatch(getRecados(errandToFilter));
 
     setInputName("");
     setInputId("");
   }
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setChecked(event.target.checked);
-  };
+  }
 
   const handleCloseSuccess = (
     event?: React.SyntheticEvent | Event,
@@ -165,6 +176,17 @@ function CardsErrands({ list }: FormProps) {
     }
 
     setOpenAlert(false);
+  };
+
+  const handleCloseError = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenAlertError(false);
   };
 
   function clearInput() {
@@ -332,6 +354,8 @@ function CardsErrands({ list }: FormProps) {
             </Table>
           </TableContainer>
         </Grid>
+
+        {/* ALERTS */}
         <Snackbar
           open={openAlert}
           autoHideDuration={6000}
@@ -346,9 +370,24 @@ function CardsErrands({ list }: FormProps) {
             {message}
           </Alert>
         </Snackbar>
+
+        <Snackbar
+          open={openAlertError}
+          autoHideDuration={6000}
+          onClose={handleCloseError}
+          anchorOrigin={{ horizontal: "left", vertical: "top" }}
+        >
+          <Alert
+            onClose={handleCloseError}
+            severity="error"
+            sx={{ width: "100%" }}
+          >
+            {messageError}
+          </Alert>
+        </Snackbar>
       </Grid>
     </>
   );
 }
 
-export { CardsErrands };
+export { TableErrands };
